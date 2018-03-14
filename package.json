@@ -1,6 +1,6 @@
 {
   "name": "graphql-cli-merge-schema",
-  "version": "0.1.1",
+  "version": "0.0.1",
   "description": "GraphQL CLI merge schema plugin",
   "files": ["LICENSE", "README.md", "dist/"],
   "main": "dist/index.js",
