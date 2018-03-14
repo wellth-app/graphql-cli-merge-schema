@@ -22,12 +22,14 @@ Here is an example:
 {
   "schemaPath": "src/graphql/schema.graphql",
   "extensions": {
-    "merge-schemas": {
+    "merge": {
       "schemas": [
         "src/graphql/schemas/client.graphql",
         "src/graphql/schemas/remote.graphql"
       ],
-      "output": "src/graphql/schema.graphql"
+      "output": "src/graphql/schema.graphql",
+      // Or...
+      "output": "src/graphql/schema.json"
     }
   }
 }
@@ -36,5 +38,5 @@ Here is an example:
 You can now run:
 
 ```
-graphql merge-schemas
+graphql merge
 ```
