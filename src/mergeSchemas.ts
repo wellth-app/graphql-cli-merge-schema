@@ -17,7 +17,13 @@ const TEMPORARY_SCHEMA_PATH = "/tmp/schema.json";
 
 export const command = "merge [--output]";
 export const desc = "Merges schemas as specified in `.graphqlconfig`";
-export const builder = {};
+export const builder = {
+  output: {
+    alias: "o",
+    describe: "Output file",
+    type: "string",
+  },
+};
 
 const loadGlob = async (paths: string[] = []): Promise<string[]> => {
   const normalizedPaths = await Promise.all(
@@ -39,43 +45,41 @@ const loadGlob = async (paths: string[] = []): Promise<string[]> => {
   }, []);
 };
 
-const mergeSchemas = async (schemaPaths: string[]): Promise<GraphQLSchema> => {
+const mergeSchemas = async (schemaPaths: string[]): Promise<string> => {
   const readFile = promisify(fs.readFile);
-  return await buildASTSchema(
-    parse(
-      mergeTypes(
-        await Promise.all(schemaPaths.map(value => readFile(value, "utf8")))
-      )
-    )
+  return mergeTypes(
+    await Promise.all(schemaPaths.map(value => readFile(value, "utf8")))
   );
 };
 
-const writeSchema = async (
-  schema: GraphQLSchema,
-  outputPath: string
-): Promise<void> => {
+export const handler = async (context, argv) => {
+  const { project, output: argOutput } = argv;
+  const { getProjectConfig } = context;
+  const {
+    configPath,
+    config: {
+      extensions: {
+        merge: {
+          schemas = [],
+          output: extensionOutput = TEMPORARY_SCHEMA_PATH,
+        },
+      },
+    },
+  } = await getProjectConfig(project);
   const writeFile = promisify(fs.writeFile);
+  const output = argOutput ? argOutput : extensionOutput;
+  const outputPath = path.resolve(output);
+  const schemaData = await mergeSchemas(await loadGlob(schemas));
 
   if (outputPath.endsWith(".json")) {
+    const schema = await buildASTSchema(parse(schemaData));
     const results = await graphql(schema, introspectionQuery);
     await writeFile(outputPath, JSON.stringify(results));
   } else if (outputPath.endsWith(".graphql")) {
-    await writeFile(outputPath, printSchema(schema));
+    await writeFile(outputPath, schemaData);
+  } else if (!outputPath) {
+    console.log(schemaData);
   } else {
     throw new Error("Invalid output format");
   }
-};
-
-export const handler = async (context, argv) => {
-  const { project } = argv;
-  const { getProjectConfig } = context;
-  const { config, configPath } = await getProjectConfig(project);
-
-  const {
-    extensions: { merge: { schemas = [], output = TEMPORARY_SCHEMA_PATH } },
-  } = config;
-
-  const outputPath = path.resolve(output);
-  const schema = await mergeSchemas(await loadGlob(schemas));
-  await writeSchema(schema, outputPath);
 };
