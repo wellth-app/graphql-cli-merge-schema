@@ -1,0 +1,45 @@
+{
+  "name": "graphql-cli-merge-schema",
+  "version": "0.1.1",
+  "description": "GraphQL CLI merge schema plugin",
+  "files": ["LICENSE", "README.md", "dist/"],
+  "main": "dist/index.js",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "test": "jest",
+    "lint": "tslint {src,test}/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wellth-app/graphql-cli-merge-schema.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wellth-app/graphql-cli-merge-schema/issues"
+  },
+  "homepage": "https://github.com/wellth-app/graphql-cli-merge-schema#readme",
+  "devDependencies": {
+    "@types/graphql": "^0.10.0",
+    "@types/jest": "^20.0.5",
+    "@types/node": "^8.0.17",
+    "jest": "^20.0.4",
+    "ts-jest": "^20.0.7",
+    "tslint": "^5.5.0",
+    "tslint-config-standard": "^6.0.1",
+    "typescript": "^2.2.0"
+  },
+  "dependencies": {
+    "glob": "^7.1.2",
+    "graphql": "^0.13.1",
+    "graphql-cli": "^2.15.8",
+    "merge-graphql-schemas": "^1.5.0"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
+    "moduleFileExtensions": ["ts", "tsx", "js"]
+  }
+}

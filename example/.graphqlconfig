@@ -1,0 +1,9 @@
+{
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "merge": {
+      "schemas": ["schema.remote.graphql", "schema.client.graphql"],
+      "output": "schema.json"
+    }
+  }
+}

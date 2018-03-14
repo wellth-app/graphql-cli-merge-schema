@@ -1,0 +1,9 @@
+union Hero = Droid | Human
+
+type User {
+  id: String!
+  username: String!
+  favoriteHeroes: [Hero]
+  favoriteEpisodes: [Episode]
+  reviews: [Review]
+}
